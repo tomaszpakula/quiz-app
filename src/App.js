@@ -1,18 +1,9 @@
-import {
-  Alert,
-  Button,
-  Container,
-  List,
-  ListItem,
-  Paper,
-  Typography,
-} from "@mui/material";
-import React, { useState } from "react";
+import { Button, Container, Paper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import Question from "./Question";
 import { useQuestion } from "./QuestionProvider";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AlertComponent from "./AlertComponent";
-import questions from "./question.json";
 
 const darkTheme = createTheme({
   palette: {
@@ -30,7 +21,20 @@ function App() {
   const { questionId } = useQuestion();
   const { points } = useQuestion();
   const { alertOn } = useQuestion();
+  const [questions, setQuestions] = useState([]);
 
+  useEffect(() => {
+    fetch("https://opentdb.com/api.php?amount=10")
+      .then((response) => response.json())
+      .then((data) => {
+        setQuestions(data.results.map((question, index) => ({ 
+          questionId: index + 1,
+          questionText: question.question,
+          correctAnswer: question.correct_answer,
+          answers: [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5),
+           })));
+      });
+  }, []);
 
   return (
     <ThemeProvider theme={darkTheme}>
