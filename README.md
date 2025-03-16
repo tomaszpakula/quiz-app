@@ -1,1 +1,1 @@
-Quiz App use API from opentdb.com 
+Quiz App uses API from opentdb.com 
